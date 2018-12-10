@@ -28,8 +28,8 @@ before_install:
 
 script:
  - ./adop
- - # Output something every 10 minutes or Travis kills the job
- - while sleep 9m; do echo "=====[ $SECONDS seconds still running ]====="; done &
+ # Output something every 5 minutes or Travis kills the job
+ - while sleep 300; do echo "=====[ $SECONDS seconds still running ]====="; done &
  - ./adop compose init
  # Killing background sleep loop
  - kill %1
