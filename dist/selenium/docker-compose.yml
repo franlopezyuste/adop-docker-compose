@@ -8,6 +8,12 @@ selenium-hub:
   net: ${CUSTOM_NETWORK_NAME}
   ports:
     - "4444:4444"
+  expose:
+    - "4444"
+  log_driver: "syslog"
+  log_opt:
+    syslog-address: "udp://${LOGSTASH_HOST}:25826"
+    tag: "selenium-hub"
 
 selenium-node-chrome:
   container_name: selenium-node-chrome
@@ -19,6 +25,10 @@ selenium-node-chrome:
     REMOTE_HOST: "http://selenium-node-chrome:5555"
     HUB_PORT_4444_TCP_ADDR: "selenium-hub"
     HUB_PORT_4444_TCP_PORT: "4444"
+  log_driver: "syslog"
+  log_opt:
+    syslog-address: "udp://${LOGSTASH_HOST}:25826"
+    tag: "selenium-node-chrome"
 
 selenium-node-firefox:
   container_name: selenium-node-firefox
@@ -30,3 +40,7 @@ selenium-node-firefox:
     REMOTE_HOST: "http://selenium-node-firefox:5555"
     HUB_PORT_4444_TCP_ADDR: "selenium-hub"
     HUB_PORT_4444_TCP_PORT: "4444"
+  log_driver: "syslog"
+  log_opt:
+    syslog-address: "udp://${LOGSTASH_HOST}:25826"
+    tag: "selenium-node-firefox"

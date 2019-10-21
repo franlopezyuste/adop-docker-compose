@@ -1,0 +1,86 @@
+jenkins:
+  container_name: jenkins
+  restart: always
+  image: accenture/adop-jenkins:0.3.6
+  #build: ../images/docker-jenkins/
+  net: ${CUSTOM_NETWORK_NAME}
+  ports:
+    - "50000:50000/tcp"
+    - "8080:8080"
+  expose:
+    - "8080"
+    - "50000"
+  privileged: true
+  environment:
+    JENKINS_OPTS: "--prefix=/jenkins"
+    ROOT_URL: "${PROTO}://${TARGET_HOST}/jenkins/"
+    LDAP_SERVER: "${LDAP_SERVER}"
+    LDAP_ROOTDN: "${LDAP_FULL_DOMAIN}"
+    LDAP_USER_SEARCH_BASE: "${LDAP_USER_BASE_DN}"
+    LDAP_USER_SEARCH: "${LDAP_USER_SEARCH}"
+    LDAP_GROUP_SEARCH_BASE: "${LDAP_GROUP_BASE_DN}"
+    LDAP_GROUP_SEARCH_FILTER: ""
+    LDAP_GROUP_MEMBERSHIP_FILTER: ""
+    LDAP_MANAGER_DN: "${LDAP_MANAGER_DN}"
+    LDAP_MANAGER_PASSWORD: ${LDAP_PWD}
+    LDAP_INHIBIT_INFER_ROOTDN: "false"
+    LDAP_DISABLE_MAIL_ADDRESS_RESOLVER: "false"
+    LDAP_DISPLAY_NAME_ATTRIBUTE_NAME: "displayName"
+    LDAP_MAIL_ADDRESS_ATTRIBUTE_NAME: "mail"
+    LDAP_GROUP_NAME_ADMIN: "${LDAP_GROUP_NAME_ADMIN}"
+    INITIAL_ADMIN_USER: ${INITIAL_ADMIN_USER}
+    INITIAL_ADMIN_PASSWORD: ${INITIAL_ADMIN_PASSWORD_PLAIN}
+    GITLAB_HOST: "gitlab"
+    GITLAB_USERNAME: ${GITLAB_JENKINS_USERNAME}
+    GITLAB_PASSWORD: ${PASSWORD_JENKINS}
+    SONAR_SERVER_URL: "http://${SONAR_HOST}:9000/sonar/"
+    SONAR_ACCOUNT_LOGIN: ${SONAR_ACCOUNT_LOGIN}
+    SONAR_ACCOUNT_PASSWORD: ${PASSWORD_JENKINS}
+    SONAR_DB_URL: "jdbc:mysql://${SONAR_MYSQL_HOST}:3306/sonar?useUnicode=true&amp;characterEncoding=utf8"
+    SONAR_DB_LOGIN: ${SONAR_DB_LOGIN}
+    SONAR_DB_PASSWORD: ${SONAR_DB_PASSWORD}
+    SONAR_PLUGIN_VERSION: ""
+    SONAR_ADDITIONAL_PROPS: ""
+    SONAR_RUNNER_VERSION: "2.9.0.670"
+    ANT_VERSION: "1.9.4"
+    MAVEN_VERSION: "3.0.5"
+    NODEJS_VERSION: "6.9.4"
+    NODEJS_GLOBAL_PACKAGES: "grunt-cli@~0.1.13 bower@~1.3.12 plato@~1.2.1"
+    NODEJS_PACKAGES_REFRESH_HOURS: "72"
+    GIT_GLOBAL_CONFIG_NAME: "ADOP Jenkins"
+    GROOVY_VERSION: "2.4.8"
+    GIT_GLOBAL_CONFIG_EMAIL: "jenkins@${LDAP_DOMAIN}"
+    DOCKER_TLS_VERIFY: ${DOCKER_TLS_VERIFY}
+    DOCKER_HOST: ${DOCKER_HOST}
+    DOCKER_CLIENT_CERT_PATH: ${DOCKER_CLIENT_CERT_PATH}
+    DOCKER_NETWORK_NAME: ${CUSTOM_NETWORK_NAME}
+    CARTRIDGE_SOURCES: ${CARTRIDGE_SOURCES}
+    ADOP_PLATFORM_MANAGEMENT_VERSION: "f922a490fbaf2856c4745a5185a3e6e9870f7944"
+  user: root 
+  volumes:
+    - jenkins_home:/var/jenkins_home 
+    - /var/run/docker.sock:/var/run/docker.sock
+  log_driver: "syslog"
+  log_opt:
+    syslog-address: "udp://${LOGSTASH_HOST}:25826"
+    tag: "jenkins"
+
+jenkins-slave:
+  container_name: jenkins-slave
+  restart: always
+  image: accenture/adop-jenkins-slave:0.1.4
+  net: ${CUSTOM_NETWORK_NAME}
+  privileged: true
+  environment:
+    SLAVE_LABELS: "aws ldap java8 docker"
+    SWARM_PASSWORD: ${PASSWORD_JENKINS}
+    SLAVE_EXECUTORS: ${SLAVE_EXECUTORS}
+    INITIAL_ADMIN_USER: ${INITIAL_ADMIN_USER}
+    INITIAL_ADMIN_PASSWORD: ${INITIAL_ADMIN_PASSWORD_PLAIN}
+  volumes:
+    - jenkins_slave_home:/workspace
+    - /var/run/docker.sock:/var/run/docker.sock
+  log_driver: "syslog"
+  log_opt:
+    syslog-address: "udp://${LOGSTASH_HOST}:25826"
+    tag: "jenkins-slave"
