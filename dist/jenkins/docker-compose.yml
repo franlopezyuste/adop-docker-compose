@@ -5,8 +5,9 @@ services:
     restart: always
     image: accenture/adop-jenkins:0.3.6
     #build: ../images/docker-jenkins/
-    networks:
-      - ${CUSTOM_NETWORK_NAME}
+    #networks:
+    #  - ${CUSTOM_NETWORK_NAME}
+    network_mode: host
     ports:
       - "50000:50000/tcp"
       - "8080:8080"
@@ -33,7 +34,7 @@ services:
       LDAP_GROUP_NAME_ADMIN: "${LDAP_GROUP_NAME_ADMIN}"
       INITIAL_ADMIN_USER: ${INITIAL_ADMIN_USER}
       INITIAL_ADMIN_PASSWORD: ${INITIAL_ADMIN_PASSWORD_PLAIN}
-      GITLAB_HOST: "gitlab"
+      GITLAB_HOST: ${GITLAB_HOST}
       GITLAB_USERNAME: ${GITLAB_JENKINS_USERNAME}
       GITLAB_PASSWORD: ${PASSWORD_JENKINS}
       SONAR_SERVER_URL: "http://${SONAR_HOST}:9000/sonar/"
@@ -73,8 +74,9 @@ services:
     container_name: jenkins-slave
     restart: always
     image: accenture/adop-jenkins-slave:0.1.4
-    networks:
-      - ${CUSTOM_NETWORK_NAME}
+    #networks:
+    #  - ${CUSTOM_NETWORK_NAME}
+    network_mode: host
     privileged: true
     environment:
       SLAVE_LABELS: "aws ldap java8 docker"
@@ -95,5 +97,6 @@ volumes:
   jenkins_home:
   jenkins_slave_home:
 
-networks:
-  ${CUSTOM_NETWORK_NAME}:
+#networks:
+#  local_network:
+#    external: true
