@@ -3,11 +3,11 @@ services:
   jenkins:
     container_name: jenkins
     restart: always
-    image: accenture/adop-jenkins:0.3.6
-    #build: ../images/docker-jenkins/
-    #networks:
-    #  - ${CUSTOM_NETWORK_NAME}
-    network_mode: host
+    #image: accenture/adop-jenkins:0.3.6
+    build: ./adop-jenkins/
+    image: accenture/adop-jenkins
+    networks:
+      - ${CUSTOM_NETWORK_NAME}
     ports:
       - "50000:50000/tcp"
       - "8080:8080"
@@ -74,9 +74,8 @@ services:
     container_name: jenkins-slave
     restart: always
     image: accenture/adop-jenkins-slave:0.1.4
-    #networks:
-    #  - ${CUSTOM_NETWORK_NAME}
-    network_mode: host
+    networks:
+      - ${CUSTOM_NETWORK_NAME}
     privileged: true
     environment:
       SLAVE_LABELS: "aws ldap java8 docker"
@@ -97,6 +96,5 @@ volumes:
   jenkins_home:
   jenkins_slave_home:
 
-#networks:
-#  local_network:
-#    external: true
+networks:
+  local_network:
