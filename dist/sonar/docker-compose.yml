@@ -24,8 +24,8 @@ services:
   sonar:
     container_name: sonar
     restart: always
-    image: accenture/adop-sonar:0.4.1
-    #build: ../images/docker-sonar/
+    image: accenture/adop-sonar
+    build: ./adop-sonar/
     networks: 
       - ${CUSTOM_NETWORK_NAME}
     ports:
