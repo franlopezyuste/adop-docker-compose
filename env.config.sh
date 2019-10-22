@@ -40,6 +40,7 @@ export SONAR_ACCOUNT_LOGIN="jenkins"
 export SONAR_DB_LOGIN=${SONAR_MYSQL_USER}
 export SONAR_DB_PASSWORD=${SONAR_MYSQL_PASSWORD}
 export CARTRIDGE_SOURCES="https://raw.githubusercontent.com/Accenture/adop-cartridges/master/cartridges.yml"
+export JENKINS_REMOTE_HOST="10.114.164.121"
 
 # Jenkins Slave
 export SLAVE_EXECUTORS=1
