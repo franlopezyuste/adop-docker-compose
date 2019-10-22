@@ -1,0 +1,3 @@
+[submodule "dist/jenkins/adop-jenkins"]
+	path = dist/jenkins/adop-jenkins
+	url = https://github.com/franlopezyuste/adop-jenkins.git
