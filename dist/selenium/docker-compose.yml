@@ -1,46 +1,54 @@
-# set TARGET_HOST to dns/ip of proxy
-# set LOGSTASH_HOST to dns/ip of logstash host
+version: '3'
+services:
+  selenium-hub:
+    container_name: selenium-hub
+    restart: always
+    image: selenium/hub:2.53.0
+    networks: 
+      - ${CUSTOM_NETWORK_NAME}
+    ports:
+      - "4444:4444"
+    expose:
+      - "4444"
+    logging:
+      driver: syslog
+      options:
+        syslog-address: "udp://${LOGSTASH_HOST}:25826"
+        tag: "selenium-hub"
 
-selenium-hub:
-  container_name: selenium-hub
-  restart: always
-  image: selenium/hub:2.53.0
-  net: ${CUSTOM_NETWORK_NAME}
-  ports:
-    - "4444:4444"
-  expose:
-    - "4444"
-  log_driver: "syslog"
-  log_opt:
-    syslog-address: "udp://${LOGSTASH_HOST}:25826"
-    tag: "selenium-hub"
+  selenium-node-chrome:
+    container_name: selenium-node-chrome
+    restart: always
+    image: selenium/node-chrome:2.53.0
+    networks: 
+      - ${CUSTOM_NETWORK_NAME}
+    environment:
+      SE_OPTS: "-nodeConfig /var/selenium-config/config-chrome.json"
+      REMOTE_HOST: "http://selenium-node-chrome:5555"
+      HUB_PORT_4444_TCP_ADDR: "selenium-hub"
+      HUB_PORT_4444_TCP_PORT: "4444"
+    logging:
+      driver: syslog
+      options:
+        syslog-address: "udp://${LOGSTASH_HOST}:25826"
+        tag: "selenium-node-chrome"
 
-selenium-node-chrome:
-  container_name: selenium-node-chrome
-  restart: always
-  image: selenium/node-chrome:2.53.0
-  net: ${CUSTOM_NETWORK_NAME}
-  environment:
-    SE_OPTS: "-nodeConfig /var/selenium-config/config-chrome.json"
-    REMOTE_HOST: "http://selenium-node-chrome:5555"
-    HUB_PORT_4444_TCP_ADDR: "selenium-hub"
-    HUB_PORT_4444_TCP_PORT: "4444"
-  log_driver: "syslog"
-  log_opt:
-    syslog-address: "udp://${LOGSTASH_HOST}:25826"
-    tag: "selenium-node-chrome"
+  selenium-node-firefox:
+    container_name: selenium-node-firefox
+    restart: always
+    image: selenium/node-firefox:2.53.0
+    networks: 
+      - ${CUSTOM_NETWORK_NAME}
+    environment:
+      SE_OPTS: "-nodeConfig /var/selenium-config/config-firefox.json"
+      REMOTE_HOST: "http://selenium-node-firefox:5555"
+      HUB_PORT_4444_TCP_ADDR: "selenium-hub"
+      HUB_PORT_4444_TCP_PORT: "4444"
+    logging:
+      driver: syslog
+      options:
+        syslog-address: "udp://${LOGSTASH_HOST}:25826"
+        tag: "selenium-node-firefox"
 
-selenium-node-firefox:
-  container_name: selenium-node-firefox
-  restart: always
-  image: selenium/node-firefox:2.53.0
-  net: ${CUSTOM_NETWORK_NAME}
-  environment:
-    SE_OPTS: "-nodeConfig /var/selenium-config/config-firefox.json"
-    REMOTE_HOST: "http://selenium-node-firefox:5555"
-    HUB_PORT_4444_TCP_ADDR: "selenium-hub"
-    HUB_PORT_4444_TCP_PORT: "4444"
-  log_driver: "syslog"
-  log_opt:
-    syslog-address: "udp://${LOGSTASH_HOST}:25826"
-    tag: "selenium-node-firefox"
+networks:
+  local_network:

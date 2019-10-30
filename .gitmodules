@@ -1,3 +1,6 @@
 [submodule "dist/jenkins/adop-jenkins"]
 	path = dist/jenkins/adop-jenkins
 	url = https://github.com/franlopezyuste/adop-jenkins.git
+[submodule "dist/sonar/adop-sonar"]
+	path = dist/sonar/adop-sonar
+	url = https://github.com/franlopezyuste/adop-sonar.git
