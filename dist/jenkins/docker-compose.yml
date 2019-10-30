@@ -37,7 +37,7 @@ services:
       GITLAB_HOST: ${GITLAB_HOST}
       GITLAB_USERNAME: ${GITLAB_JENKINS_USERNAME}
       GITLAB_PASSWORD: ${PASSWORD_JENKINS}
-      SONAR_SERVER_URL: "http://${SONAR_HOST}:9000/sonar/"
+      SONAR_SERVER_URL: "http://${SONAR_HOST}:8180/sonar/"
       SONAR_ACCOUNT_LOGIN: ${SONAR_ACCOUNT_LOGIN}
       SONAR_ACCOUNT_PASSWORD: ${PASSWORD_JENKINS}
       SONAR_DB_URL: "jdbc:mysql://${SONAR_MYSQL_HOST}:3306/sonar?useUnicode=true&amp;characterEncoding=utf8"
@@ -59,7 +59,7 @@ services:
       DOCKER_CLIENT_CERT_PATH: ${DOCKER_CLIENT_CERT_PATH}
       DOCKER_NETWORK_NAME: ${CUSTOM_NETWORK_NAME}
       CARTRIDGE_SOURCES: ${CARTRIDGE_SOURCES}
-      ADOP_PLATFORM_MANAGEMENT_VERSION: "f922a490fbaf2856c4745a5185a3e6e9870f7944"
+      ADOP_PLATFORM_MANAGEMENT_VERSION: "6ff1a919f17833291fdc891583fb097c1290f1e7"
     user: root
     volumes:
       - jenkins_home:/var/jenkins_home
@@ -98,3 +98,4 @@ volumes:
 
 networks:
   local_network:
+    external: true
